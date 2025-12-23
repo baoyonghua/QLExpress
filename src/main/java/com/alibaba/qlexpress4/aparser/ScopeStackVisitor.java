@@ -1,6 +1,6 @@
 package com.alibaba.qlexpress4.aparser;
 
-public abstract class ScopeStackVisitor extends QLParserBaseVisitor<Void> {
+public abstract class ScopeStackVisitor extends com.alibaba.qlexpress4.aparser.QLParserBaseVisitor<Void> {
     
     private ExistStack existStack;
     
@@ -10,7 +10,7 @@ public abstract class ScopeStackVisitor extends QLParserBaseVisitor<Void> {
     
     // scope
     @Override
-    public Void visitBlockExpr(QLParser.BlockExprContext ctx) {
+    public Void visitBlockExpr(com.alibaba.qlexpress4.aparser.QLParser.BlockExprContext ctx) {
         push();
         super.visitBlockExpr(ctx);
         pop();
@@ -18,14 +18,14 @@ public abstract class ScopeStackVisitor extends QLParserBaseVisitor<Void> {
     }
     
     @Override
-    public Void visitQlIf(QLParser.QlIfContext qlIfContext) {
+    public Void visitQlIf(com.alibaba.qlexpress4.aparser.QLParser.QlIfContext qlIfContext) {
         qlIfContext.condition.accept(this);
         
         push();
         qlIfContext.thenBody().accept(this);
         pop();
         
-        QLParser.ElseBodyContext elseBodyContext = qlIfContext.elseBody();
+        com.alibaba.qlexpress4.aparser.QLParser.ElseBodyContext elseBodyContext = qlIfContext.elseBody();
         if (elseBodyContext != null) {
             push();
             elseBodyContext.accept(this);
@@ -36,20 +36,20 @@ public abstract class ScopeStackVisitor extends QLParserBaseVisitor<Void> {
     }
     
     @Override
-    public Void visitTryCatchExpr(QLParser.TryCatchExprContext ctx) {
-        QLParser.BlockStatementsContext blockStatementsContext = ctx.blockStatements();
+    public Void visitTryCatchExpr(com.alibaba.qlexpress4.aparser.QLParser.TryCatchExprContext ctx) {
+        com.alibaba.qlexpress4.aparser.QLParser.BlockStatementsContext blockStatementsContext = ctx.blockStatements();
         if (blockStatementsContext != null) {
             push();
             blockStatementsContext.accept(this);
             pop();
         }
         
-        QLParser.TryCatchesContext tryCatchesContext = ctx.tryCatches();
+        com.alibaba.qlexpress4.aparser.QLParser.TryCatchesContext tryCatchesContext = ctx.tryCatches();
         if (tryCatchesContext != null) {
             tryCatchesContext.accept(this);
         }
         
-        QLParser.TryFinallyContext tryFinallyContext = ctx.tryFinally();
+        com.alibaba.qlexpress4.aparser.QLParser.TryFinallyContext tryFinallyContext = ctx.tryFinally();
         if (tryFinallyContext != null) {
             push();
             tryFinallyContext.accept(this);
@@ -60,7 +60,7 @@ public abstract class ScopeStackVisitor extends QLParserBaseVisitor<Void> {
     }
     
     @Override
-    public Void visitTryCatch(QLParser.TryCatchContext ctx) {
+    public Void visitTryCatch(com.alibaba.qlexpress4.aparser.QLParser.TryCatchContext ctx) {
         push();
         super.visitTryCatch(ctx);
         pop();
@@ -68,14 +68,14 @@ public abstract class ScopeStackVisitor extends QLParserBaseVisitor<Void> {
     }
     
     @Override
-    public Void visitFunctionStatement(QLParser.FunctionStatementContext ctx) {
+    public Void visitFunctionStatement(com.alibaba.qlexpress4.aparser.QLParser.FunctionStatementContext ctx) {
         ctx.varId().accept(this);
-        QLParser.FormalOrInferredParameterListContext paramList = ctx.formalOrInferredParameterList();
+        com.alibaba.qlexpress4.aparser.QLParser.FormalOrInferredParameterListContext paramList = ctx.formalOrInferredParameterList();
         if (paramList != null) {
             paramList.accept(this);
         }
         
-        QLParser.BlockStatementsContext functionBlockStatements = ctx.blockStatements();
+        com.alibaba.qlexpress4.aparser.QLParser.BlockStatementsContext functionBlockStatements = ctx.blockStatements();
         if (functionBlockStatements != null) {
             push();
             functionBlockStatements.accept(this);

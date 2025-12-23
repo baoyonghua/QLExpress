@@ -570,8 +570,10 @@ public class Express4RunnerTest {
         // black list security strategy
         Set<Member> memberList = new HashSet<>();
         memberList.add(MyDesk.class.getMethod("getBook2"));
-        Express4Runner express4RunnerBlackList = new Express4Runner(
-            InitOptions.builder().securityStrategy(QLSecurityStrategy.blackList(memberList)).build());
+        InitOptions blackListInitOptions = InitOptions.builder()
+                .securityStrategy(QLSecurityStrategy.blackList(memberList))
+                .build();
+        Express4Runner express4RunnerBlackList = new Express4Runner(blackListInitOptions);
         assertErrorCode(express4RunnerBlackList, context, "desk.book2", "FIELD_NOT_FOUND");
         Object resultBlack =
             express4RunnerBlackList.execute("desk.book1", context, QLOptions.DEFAULT_OPTIONS).getResult();
@@ -580,8 +582,11 @@ public class Express4RunnerTest {
         
         // tag::securityStrategyWhiteList[]
         // white list security strategy
-        Express4Runner express4RunnerWhiteList = new Express4Runner(
-            InitOptions.builder().securityStrategy(QLSecurityStrategy.whiteList(memberList)).build());
+
+        InitOptions whiteListInitOptions = InitOptions.builder()
+                .securityStrategy(QLSecurityStrategy.whiteList(memberList))
+                .build();
+        Express4Runner express4RunnerWhiteList = new Express4Runner(whiteListInitOptions);
         Object resultWhite =
             express4RunnerWhiteList.execute("desk.getBook2()", context, QLOptions.DEFAULT_OPTIONS).getResult();
         Assert.assertEquals("Effective Java", resultWhite);
@@ -590,13 +595,15 @@ public class Express4RunnerTest {
         
         // tag::securityStrategyOpen[]
         // open security strategy
-        Express4Runner express4RunnerOpen =
-            new Express4Runner(InitOptions.builder().securityStrategy(QLSecurityStrategy.open()).build());
+        InitOptions openSecurityInitOptions = InitOptions.builder().securityStrategy(QLSecurityStrategy.open()).build();
+        Express4Runner express4RunnerOpen = new Express4Runner(openSecurityInitOptions);
         Assert.assertEquals("Thinking in Java",
             express4RunnerOpen.execute("desk.book1", context, QLOptions.DEFAULT_OPTIONS).getResult());
         Assert.assertEquals("Effective Java",
             express4RunnerOpen.execute("desk.getBook2()", context, QLOptions.DEFAULT_OPTIONS).getResult());
         // end::securityStrategyOpen[]
+        QLResult result = express4RunnerOpen.execute("Math.max(1, 2)", Collections.emptyMap(), QLOptions.DEFAULT_OPTIONS);
+        System.out.println(result.getResult());
     }
     
     @Test
